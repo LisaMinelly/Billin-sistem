@@ -1,0 +1,91 @@
+def add_product(products):
+    """
+    Prompts the user for product details and adds the product to the list.
+    """
+    name = input("Product Name: ")
+    while True:
+        try:
+            price = float(input("Unit Price: "))
+            if price <= 0:
+                print("Price must be a positive number.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a number for the price.")
+
+    while True:
+        try:
+            quantity = int(input("Quantity: "))
+            if quantity <= 0:
+                print("Quantity must be a positive integer.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter an integer for the quantity.")
+
+    products.append({"name": name, "price": price, "quantity": quantity})
+    print(f"'{name}' added to the invoice.")
+
+def calculate_total(products):
+    """
+    Calculates the subtotal and the total with VAT (19%) for the invoice.
+    """
+    subtotal = sum(p["price"] * p["quantity"] for p in products)
+    vat = subtotal * 0.19  # Assuming 19% VAT
+    total = subtotal + vat
+    return subtotal, vat, total
+
+def print_invoice(products, subtotal, vat, total):
+    """
+    Prints a formatted invoice to the console.
+    """
+    print("\n" + "="*40)
+    print("        SIMPLE PYTHON INVOICE")
+    print("="*40)
+    print(f"{'Product':<20} {'Quantity':<10} {'Unit Price':<10} {'Total':<10}")
+    print("-" * 60)
+    for p in products:
+        product_total = p["price"] * p["quantity"]
+        print(f"{p['name']:<20} {p['quantity']:<10} {p['price']!s:<10.2f} {product_total!s:<10.2f}")
+    print("-" * 60)
+    print(f"{'Subtotal:':<50} {subtotal!s:<10.2f}")
+    print(f"{'VAT (19%):':<50} {vat!s:<10.2f}")
+    print(f"{'Total Due:':<50} {total!s:<10.2f}")
+    print("="*60)
+    print("       Thank you for your purchase!")
+    print("="*60 + "\n")
+
+def main():
+    """
+    Main function to run the billing system.
+    """
+    invoice_products = []
+
+    print("--- Simple Billing System ---")
+
+    while True:
+        print("\nOptions:")
+        print("1. Add Product")
+        print("2. Generate Invoice")
+        print("3. Exit")
+
+        option = input("Choose an option: ")
+
+        if option == '1':
+            add_product(invoice_products)
+        elif option == '2':
+            if not invoice_products:
+                print("No products in the invoice to generate. Please add some first.")
+                continue
+            sub, v, tot = calculate_total(invoice_products)
+            print_invoice(invoice_products, sub, v, tot)
+            # After printing the invoice, if you want to start a new one, clear the list:
+            # invoice_products = []
+        elif option == '3':
+            print("Exiting billing system. Goodbye!")
+            break
+        else:
+            print("Invalid option. Please choose a valid option (1, 2, or 3).")
+
+if __name__ == "__main__":
+    main()
